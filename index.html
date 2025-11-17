@@ -1,0 +1,1162 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NotebookLM 小論文專家 — 專屬操作手冊</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft JhengHei', 'PingFang TC', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+            margin-top: 10px;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .lesson-tab {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #e0e0e0;
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 20px;
+            background: #f5f5f5;
+            border: none;
+            border-radius: 10px 10px 0 0;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #666;
+        }
+
+        .tab-button.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transform: translateY(-5px);
+        }
+
+        .tab-button:hover {
+            background: #e0e0e0;
+        }
+
+        .tab-button.active:hover {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .lesson-content {
+            display: none;
+        }
+
+        .lesson-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .section {
+            margin-bottom: 40px;
+            padding: 30px;
+            border-radius: 15px;
+            background: #f8f9fa;
+            border-left: 5px solid #667eea;
+            transition: all 0.3s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
+        }
+
+        .section-title {
+            font-size: 1.8em;
+            color: #667eea;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .section-title:hover {
+            color: #764ba2;
+        }
+
+        .goal-box {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .goal-box h3 {
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .goal-box ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .goal-box li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .goal-box li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        .division-box {
+            background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .division-box h3 {
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            color: #2c3e50;
+        }
+
+        .division-table {
+            width: 100%;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 15px;
+        }
+
+        .division-table td {
+            padding: 15px;
+            border: 1px solid #ddd;
+        }
+
+        .division-table td:first-child {
+            background: #667eea;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+            width: 25%;
+        }
+
+        .tag-box {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin: 0 5px;
+        }
+
+        .tag-official {
+            background: #3498db;
+            color: white;
+        }
+
+        .tag-media {
+            background: #f39c12;
+            color: white;
+        }
+
+        .tag-integrate {
+            background: #2ecc71;
+            color: white;
+        }
+
+        .step-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .step-table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-size: 1.1em;
+        }
+
+        .step-table td {
+            padding: 15px;
+            border-bottom: 1px solid #e0e0e0;
+            line-height: 1.6;
+        }
+
+        .step-table tr:hover {
+            background: #f5f5f5;
+        }
+
+        .step-number {
+            background: #667eea;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .prompt-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+
+        .prompt-box strong {
+            color: #856404;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .copy-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            background: #764ba2;
+            transform: scale(1.05);
+        }
+
+        .collapse-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+        }
+
+        .collapse-content.active {
+            max-height: 8000px;
+        }
+
+        .arrow {
+            transition: transform 0.3s ease;
+            display: inline-block;
+            font-size: 0.6em;
+        }
+
+        .arrow.rotated {
+            transform: rotate(90deg);
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+
+        /* --- Padlet Item Base Style (Lesson 1 uses this, implicitly white) --- */
+        .feedback-item {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 15px 0;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .feedback-item:hover {
+            border-color: #667eea;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+            transform: translateX(5px);
+        }
+
+        .feedback-header-with-btn {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .feedback-header-with-btn span {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .copy-question {
+            font-size: 0.85em;
+            padding: 6px 12px;
+            white-space: nowrap;
+        }
+
+        .feedback-content {
+            line-height: 1.8;
+        }
+
+        .feedback-content p {
+            margin: 8px 0;
+        }
+
+        .example-box {
+            background: #f0f8ff;
+            border-left: 4px solid #4CAF50;
+            padding: 12px 15px;
+            margin: 12px 0;
+            border-radius: 6px;
+            font-size: 0.95em;
+            line-height: 1.6;
+        }
+
+        .example-box strong {
+            color: #4CAF50;
+        }
+
+        .feedback-purpose {
+            color: #666;
+            margin-top: 10px !important;
+            padding-left: 15px;
+            border-left: 3px solid #4CAF50;
+        }
+        
+        .teacher-email-box {
+            margin-top: 10px; 
+            background: #e6e6fa; 
+            padding: 8px; 
+            border-radius: 6px; 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .topic-placeholder {
+            color: #e53935;
+            font-weight: bold;
+        }
+
+        .copy-hint {
+            margin-top: 6px;
+            font-size: 0.85em;
+            color: #555;
+        }
+        
+        /* --- Lesson 2 Specific RED/Pink Style --- */
+        #lesson2 .feedback-item {
+            background: #fffafa; /* Very light pink/red background (Requested RED) */
+            border: 2px solid #e74c3c; /* Red border */
+        }
+        
+        #lesson2 .feedback-item:hover {
+            border-color: #c0392b;
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+            transform: translateX(5px);
+        }
+        
+        #lesson2 .feedback-header-with-btn span {
+            color: #e74c3c; /* Red text for title */
+        }
+        
+        #lesson2 .example-box {
+            background: #fdf5e6; /* Light yellow for contrast */
+            border-left: 4px solid #c0392b; /* Darker red/brown border */
+        }
+
+        #lesson2 .example-box strong {
+            color: #c0392b; /* Darker red/brown text */
+        }
+        
+        #lesson2 .feedback-purpose {
+            border-left: 3px solid #c0392b;
+        }
+        
+        /* --- END Lesson 2 Specific Style --- */
+
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .section {
+                padding: 20px;
+            }
+
+            .feedback-item {
+                padding: 15px;
+            }
+
+            .tab-button {
+                font-size: 1em;
+                padding: 15px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧠 NotebookLM 小論文專家 📚</h1>
+            <p>讓 AI 成為你的研究助手</p>
+        </div>
+
+        <div class="content">
+            <div class="section">
+                <div class="section-title" onclick="toggleSection(this)">
+                    <span class="arrow">▶</span>
+                    <span>🎯 課程總覽與分工說明</span>
+                </div>
+                <div class="collapse-content active">
+                    <div class="goal-box">
+                        <h3>教學目標</h3>
+                        <ul>
+                            <li>學生能區分官方與民間／媒體資料的特性與立場</li>
+                            <li>學生能運用 NotebookLM 搜尋、摘要、比較不同資料來源</li>
+                            <li>學生能合作整合雙邊觀點,形成初步立場並回報成果</li>
+                            <li>學生能提出新的探究問題或後續研究方向</li>
+                            <li>學生能理解 AI 工具在資料整理中的輔助價值與侷限</li>
+                        </ul>
+                    </div>
+
+                    <div class="division-box">
+                        <h3>🧩 組內分工與 Padlet 標籤說明</h3>
+                        <p style="margin-bottom: 15px;">每組會被拆成「官方組」和「民間組」兩個半組,分別蒐集不同類型的資料：</p>
+                        
+                        <table class="division-table">
+                            <tr>
+                                <td>4 人小組</td>
+                                <td>拆成 2+2（官方 2 人；民間 2 人）<br>
+                                官方組貼文標籤：<span class="tag-box tag-official">#官方</span><br>
+                                民間組貼文標籤：<span class="tag-box tag-media">#民間</span></td>
+                            </tr>
+                            <tr>
+                                <td>3 人小組</td>
+                                <td>拆成 2+1（兩人負責一個面向）<br>
+                                同樣使用 <span class="tag-box tag-official">#官方</span> 和 <span class="tag-box tag-media">#民間</span> 標籤</td>
+                            </tr>
+                            <tr>
+                                <td>2 人小組</td>
+                                <td>拆成 1+1（一人負責官方，一人負責民間）<br>
+                                **第二節課再一起統整**，最後貼在 <span class="tag-box tag-integrate">#整合成果</span></td>
+                            </tr>
+                        </table>
+
+                        <div style="background: white; padding: 15px; border-radius: 8px; margin-top: 15px;">
+                            <strong>📌 重點提醒：</strong>
+                            <ul style="margin-top: 10px; padding-left: 20px;">
+                                <li>**第一節課：**官方組上傳至 <span class="tag-box tag-official">#官方</span>；民間組上傳至 <span class="tag-box tag-media">#民間</span></li>
+                                <li>**第二節課：**全組整合後,由組長上傳至 <span class="tag-box tag-integrate">#整合成果</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lesson-tab">
+                <button class="tab-button active" onclick="switchLesson(1)">
+                    🕐 第一節課<br><small>資料蒐集與 AI 摘要</small>
+                </button>
+                <button class="tab-button" onclick="switchLesson(2)">
+                    🕑 第二節課<br><small>整合討論與成果分享</small>
+                </button>
+            </div>
+
+            <div id="lesson1" class="lesson-content active">
+                <div class="section">
+                    <div class="section-title" onclick="toggleSection(this)">
+                        <span class="arrow">▶</span>
+                        <span>📝 步驟一：分組、登入與共用 NotebookLM</span>
+                    </div>
+                    <div class="collapse-content">
+                        <table class="step-table">
+                            <thead>
+                                <tr>
+                                    <th>步驟</th>
+                                    <th>怎麼做？</th>
+                                    <th>🎯 重點提醒</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><span class="step-number">1</span>分組</td>
+                                    <td>每 2 人共用一台電腦<br>確認你們是「官方組」還是「民間組」</td>
+                                    <td>官方組找政府、學術資料<br>民間組找媒體、評論資料</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="step-number">2</span>登入</td>
+                                    <td>🌐 打開網址：<code>notebooklm.google.com</code><br>用 Google 帳號登入</td>
+                                    <td>記得用學校的 Google 帳號！</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="step-number">3</span>建立筆記本</td>
+                                    <td>📁 點「＋New Notebook」</td>
+                                    <td>這是你們半組的專屬資料庫</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="step-number">4</span>命名</td>
+                                    <td>
+                                        ✏️ 命名格式：<br>
+                                        <strong>班級_主題_組名_官方</strong> 或<br>
+                                        <strong>班級_主題_組名_民間</strong><br><br>
+                                        範例：
+                                        <code id="notebook-name-sample">901_AI教育_第三組_官方</code>
+                                        <button class="copy-btn" onclick="copyPrompt('notebook-name-sample')">📋 複製範例</button>
+                                    </td>
+                                    <td>一定要加上「官方」或「民間」<br>這樣老師才知道是哪一組！</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div style="margin-top: 20px; background: #fbe6e6; padding: 20px; border-radius: 8px; border-left: 4px solid #f5576c;">
+                            <p style="margin-bottom: 10px; color: #f5576c; font-size: 1.2em;"><strong>🚨 極重要提醒：一開始就先共用給老師</strong></p>
+                            <p style="margin-bottom: 8px;">• 由於學校帳號限制，請務必在 **NotebookLM 內「直接共用」給老師的 E-mail**。</p>
+                            <p>• 如果老師的 E-mail **沒有在 NotebookLM 收到共用**，老師將無法打開你的連結，作業視同未交！</p>
+                        </div>
+
+                        <table class="step-table">
+                            <thead>
+                                <tr>
+                                    <th>步驟</th>
+                                    <th>怎麼做？</th>
+                                    <th>🎯 目的/小提醒</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><span class="step-number">5</span>共用</td>
+                                    <td>1️⃣ 按右上角的「共用」（分享）</td>
+                                    <td>讓老師可以看到你們的成果</td>
+                                </tr>
+                                <tr>
+                                    <td><span class="step-number">6</span>直接共用給老師</td>
+                                    <td>
+                                        2️⃣ 在共用面板中，**直接輸入老師的 E-mail 帳號**：<br>
+                                        <div class="teacher-email-box">
+                                            **老師 E-mail：** <span id="teacherEmailText" style="font-weight: bold; color: #764ba2;">mathyummy@ycjh.hlc.edu.tw</span>
+                                            <button class="copy-btn" style="margin-top: 0; background: #764ba2;" onclick="copyEmail()">📋 複製 E-mail</button>
+                                        </div>
+                                        <br><br>
+                                        **確認權限設定為「檢視者 (Viewer)」**
+                                    </td>
+                                    <td><strong>這是學校限制下的唯一方法！</strong><br>務必輸入正確 E-mail，否則老師無法檢視。</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title" onclick="toggleSection(this)">
+                        <span class="arrow">▶</span>
+                        <span>🔍 步驟二：使用搜尋指令找資料</span>
+                    </div>
+                    <div class="collapse-content">
+                        <div class="highlight">
+                            <strong>⚠️ 重要：</strong>官方組和民間組要使用不同的搜尋指令！請依據你們的分組,選擇對應的指令。
+                        </div>
+
+                        <div style="background: #e8f5e9; padding: 20px; border-radius: 10px; margin-top: 10px;">
+                            <strong>💡 使用步驟：</strong>
+                            <ol style="padding-left: 20px; margin-top: 10px; line-height: 1.8;">
+                                <li>點擊「複製指令」按鈕</li>
+                                <li>記得先把 <strong class="topic-placeholder">[小論文主題]</strong> 改成你們小組的主題</li>
+                                <li>在 NotebookLM 中搜尋（上方的「探索」欄位）</li>
+                                <li>找到 3–5 篇資料後，點選「Add Source」上傳網址</li>
+                            </ol>
+                        </div>
+
+                        <h3 style="margin: 25px 0 15px 0; color: #3498db; font-size: 1.4em;">🏛️ 官方組專用搜尋指令</h3>
+                        <p style="margin-bottom: 15px;">專找：政府單位、教育部、學術期刊、研究機構</p>
+
+                        <div class="prompt-box">
+                            <strong>指令 A（通用型）：</strong>
+                            <p id="official-a">我的研究主題是「<span class="topic-placeholder">[小論文主題]</span>」。請幫我搜尋並列出 5 篇最具權威性和可信度的相關文獻連結，來源必須包含：政府單位、學術論文或期刊、教育部網站。</p>
+                            <button class="copy-btn" onclick="copyPrompt('official-a')">📋 複製指令</button>
+                            <div class="copy-hint">※ 請先把 [小論文主題] 改成你們小組的主題，再貼到 NotebookLM 的搜尋欄（探索）。</div>
+                        </div>
+
+                        <div class="prompt-box">
+                            <strong>指令 B（指定時間型）：</strong>
+                            <p id="official-b">關於「<span class="topic-placeholder">[小論文主題]</span>」的最新研究或報告，請搜尋近三年內 3 個不同的官方或學術網站連結，來源必須是政府報告、教育研究機構、或大學出版物。</p>
+                            <button class="copy-btn" onclick="copyPrompt('official-b')">📋 複製指令</button>
+                            <div class="copy-hint">※ 貼上之前，記得把 [小論文主題] 改成你們的小論文主題。</div>
+                        </div>
+
+                        <h3 style="margin: 35px 0 15px 0; color: #f39c12; font-size: 1.4em;">📰 民間組專用搜尋指令</h3>
+                        <p style="margin-bottom: 15px;">專找：主流媒體、專家評論、深度報導、社會觀點</p>
+
+                        <div class="prompt-box">
+                            <strong>指令 A（深度專題型）：</strong>
+                            <p id="media-a">我的研究主題是「<span class="topic-placeholder">[小論文主題]</span>」。請搜尋 5 篇出自主流媒體（如聯合報、自由時報、風傳媒、天下雜誌）的深度專題，內容需包含專家評論或社會觀點。</p>
+                            <button class="copy-btn" onclick="copyPrompt('media-a')">📋 複製指令</button>
+                            <div class="copy-hint">※ 貼上之前，記得把 [小論文主題] 改成你們的小論文主題。</div>
+                        </div>
+
+                        <div class="prompt-box">
+                            <strong>指令 B（專家訪談型）：</strong>
+                            <p id="media-b">請列出近三年內關於「<span class="topic-placeholder">[小論文主題]</span>」的媒體報導、專家訪談或評論文章，優先選擇有記者署名、具數據或案例分析的報導。</p>
+                            <button class="copy-btn" onclick="copyPrompt('media-b')">📋 複製指令</button>
+                            <div class="copy-hint">※ 請先把 [小論文主題] 改成你們小組的主題，再貼到 NotebookLM 的搜尋欄。</div>
+                        </div>
+                    </div>
+                </div>
+
+             <div class="section">
+    <div class="section-title" onclick="toggleSection(this)">
+        <span class="arrow">▶</span>
+        💬 步驟三：向 AI 提問整理資料
+    </div>
+
+    <div class="collapse-content">
+        <p style="margin-bottom:20px;">
+            在 NotebookLM 中勾選所有你們要用的資料後，請依序使用以下四個提問。  
+            第 1 題請先告訴 AI 你們的研究主題，後續三題就不需要再輸入主題。
+        </p>
+
+        <table class="step-table">
+            <thead>
+                <tr>
+                    <th style="width:25%;">提問目的</th>
+                    <th>提問內容（可複製）</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                <!-- 第一題 -->
+                <tr>
+                    <td>① 先告訴 AI 研究主題</td>
+                    <td>
+                        <span id="q1">
+                            我們的研究主題是「＿＿＿＿」。請用三句簡單（國中生能懂）的語句告訴我：這些資料裡有哪些內容與我的研究主題最有關？
+                        </span>
+                        <button class="copy-btn" onclick="copyPrompt('q1')">複製</button>
+                    </td>
+                </tr>
+
+                <!-- 第二題 -->
+                <tr>
+                    <td>② 整理 3–5 個重點</td>
+                    <td>
+                        <span id="q2">
+                            請整理 3–5 個和我的研究主題最相關的重點。請用條列式、國中生能懂的語言。
+                        </span>
+                        <button class="copy-btn" onclick="copyPrompt('q2')">複製</button>
+                    </td>
+                </tr>
+
+                <!-- 第三題 -->
+                <tr>
+                    <td>③ 找出不同觀點</td>
+                    <td>
+                        <span id="q3">
+                            這些資料中，有沒有對我的研究主題不同或相反的想法？如果有，請用 2–3 句簡單方式說明不同在哪裡。請用條列式、國中生能懂的語言
+
+                        </span>
+                        <button class="copy-btn" onclick="copyPrompt('q3')">複製</button>
+                    </td>
+                </tr>
+
+                <!-- 第四題 -->
+                <tr>
+                    <td>④ 給我下一步方向</td>
+                    <td>
+                        <span id="q4">
+                            如果我要繼續研究我的研究主題，你建議我接下來可以從哪三個方向思考？請用條列式、國中生能懂的語言
+                        </span>
+                        <button class="copy-btn" onclick="copyPrompt('q4')">複製</button>
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+
+                <div class="section">
+                    <div class="section-title" onclick="toggleSection(this)">
+                        <span class="arrow">▶</span>
+                        <span>📤 步驟四：Padlet 回報（第一節課）</span>
+                    </div>
+                    <div class="collapse-content">
+                        <table class="step-table">
+                            <thead>
+                                <tr>
+                                    <th>步驟</th>
+                                    <th>怎麼做？</th>
+                                    <th>🎯 目的/小提醒</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><span class="step-number">7</span>Padlet 回報</td>
+                                    <td>進入老師指定的 Padlet，<strong>根據組別欄位</strong>張貼 4 則貼文<br><br>
+                                        <strong>官方組貼在「官方」欄位</strong>，並使用標籤：<span class="tag-box tag-official">#官方</span><br>
+                                        <strong>民間組貼在「民間」欄位</strong>，並使用標籤：<span class="tag-box tag-media">#民間</span>
+                                    </td>
+                                    <td>請務必將貼文貼在<strong>正確的組別欄位</strong>！<br>每個問題要分別貼一則。</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h3 style="margin: 30px 0 20px 0; color: #667eea; text-align: center; font-size: 1.5em;">📋 第一節課回饋卡（4 題） - 白色</h3>
+                        <p style="text-align: center; margin-bottom: 15px; color: #666;">請將以下 <strong>4 個問題</strong> 分別張貼成 4 則獨立貼文</p>
+                        <p style="text-align: center; margin-bottom: 25px; background: #fff3cd; padding: 15px; border-radius: 8px;">
+                            <strong>📝 重要提醒：</strong>請參考老師在 Padlet 上的示範貼文格式及顏色
+                        </p>
+                        
+                        <div class="padlet-list">
+                            <div class="feedback-item">
+                                <div class="feedback-header-with-btn">
+                                    <span>1. 🔗 NotebookLM 連結</span>
+                                    <button class="copy-btn copy-question" onclick="copyQuestion('1. 🔗 NotebookLM 連結')">📋 複製標題</button>
+                                </div>
+                                <div class="feedback-content">
+                                    <p>📎 請貼上你們在 NotebookLM 完成的筆記連結。</p>
+                                    <div class="example-box">
+                                        <strong>【範例】</strong>https://notebooklm.google.com/notebook/xxxx
+                                    </div>
+                                    <p class="feedback-purpose">💡 <strong>為什麼要這樣做？</strong>讓老師與同學能直接看到你們的小組成果。</p>
+                                </div>
+                            </div>
+
+<div class="feedback-item">
+    <div class="feedback-header-with-btn">
+        <span>2. 📋 小組資料來源清單</span>
+        <button class="copy-btn copy-question" onclick="copyQuestion('2. 📋 小組資料來源清單')">📋 複製標題</button>
+    </div>
+
+    <div class="feedback-content">
+        <p>🗂️ 請列出你們上傳的 3–5 篇資料來源，並說明資料的類型。</p>
+
+        <div class="example-box">
+            <strong>【範例】</strong><br>
+            1. 2024台灣同志(LGBTQ+)學生校園經驗調查報告, 台灣同志諮詢熱線協會, meiying(發表者) 或 台灣同志諮詢熱線協會, 2025-09-02<br>
+            2. 家庭經驗、社群互動以及學校對國中生性別平等觀念之影響, 國立臺南大學《教育研究學報》57卷2期, 陸偉明, 2023<br>
+            3. 教友誼，也教性別平等：一個行動研究帶來的教學啟示, 國立東華大學花師教育學院《教育與多元文化研究》28期, 游美惠, 2023-11<br>
+            4. 花蓮縣國中兩性 ICT 能力差異探索, 宜昌國中投稿, 吳芷諼、吳咨萱（宜昌國中學生）, 未提供<br>
+            5. 性別平等教育專題講座公告, 宜昌國中網站, 活動輔導主任, 2016-11-22<br>
+            6. 碩士班【諮商心理組】論文目錄, 國立高雄師範大學諮商心理所, （論文目錄）, 涵蓋101–114學年度
+        </div>
+
+        <p class="feedback-purpose">💡 <strong>為什麼要這樣做？</strong>確認資料的多樣性與可靠性。</p>
+
+        <!-- NotebookLM 整理指令（已移到「為什麼要這樣做？」下方） -->
+        <div class="prompt-box" style="margin-top: 15px;">
+            <strong>📘 NotebookLM 整理指令（可複製）</strong>
+            <p id="nlm-source-format">
+                請幫我把我勾選的所有資料整理成條列清單，每篇請用「單一行」表示，格式為：<br>
+                <strong>標題, 出處, 作者, 年份</strong><br>
+                若資料沒有作者或年份，請標示「未提供」。請保持條列式（1. 2. 3.…）。
+            </p>
+            <button class="copy-btn" onclick="copyPrompt('nlm-source-format')">📋 複製指令</button>
+            <div class="copy-hint">※ 請貼到 NotebookLM 對話欄，讓 AI 自動整理成單行格式</div>
+        </div>
+    </div>
+</div>
+
+
+                            <div class="feedback-item">
+                                <div class="feedback-header-with-btn">
+                                    <span>3. ⚖️ 最有價值的一篇資料與原因</span>
+                                    <button class="copy-btn copy-question" onclick="copyQuestion('3. ⚖️ 最有價值的一篇資料與原因')">📋 複製標題</button>
+                                </div>
+                                <div class="feedback-content">
+                                    <p>🏆 選出對研究最有幫助的一篇資料，並簡述為什麼它最有價值。</p>
+                                    <div class="example-box">
+                                        <strong>【範例】</strong>教育部的白皮書很有價值，因為它有最新的統計數據，可以直接支持我們的研究問題。
+                                    </div>
+                                    <p class="feedback-purpose">💡 <strong>為什麼要這樣做？</strong>培養學生篩選與評估資料的能力。</p>
+                                </div>
+                            </div>
+
+                            <div class="feedback-item">
+                                <div class="feedback-header-with-btn">
+                                    <span>4. ❓ AI 摘要後產生的新問題</span>
+                                    <button class="copy-btn copy-question" onclick="copyQuestion('4. ❓ AI 摘要後產生的新問題')">📋 複製標題</button>
+                                </div>
+                                <div class="feedback-content">
+                                    <p>💡 整理完資料後，小組對主題有什麼新的疑問？</p>
+                                    <div class="example-box">
+                                        <strong>【範例】</strong>AI 說電動車減碳，但我們想知道「電池回收」的過程，真的沒有污染嗎？
+                                    </div>
+                                    <p class="feedback-purpose">💡 <strong>為什麼要這樣做？</strong>鼓勵學生從 AI 摘要延伸出更深的探究。</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div id="lesson2" class="lesson-content">
+                <div class="section">
+                    <div class="section-title" onclick="toggleSection(this)">
+                        <span class="arrow">▶</span>
+                        <span>🎯 學習目標與課程流程</span>
+                    </div>
+                    <div class="collapse-content active">
+                        <div class="goal-box">
+                            <h3>【教學目標】</h3>
+                            <ul>
+                                <li>學會比較、整合雙邊（官方與民間）資料觀點。</li>
+                                <li>形成一句話立場與後續探究方向。</li>
+                                <li>完成全組的成果回報。</li>
+                            </ul>
+                        </div>
+                        
+      <h3 style="margin: 25px 0 15px 0; color: #667eea; font-size: 1.5em;">一、課堂流程說明 (40 分鐘)</h3>
+
+<table class="step-table">
+    <thead>
+        <tr>
+            <th>流程</th>
+            <th>時間</th>
+            <th>任務說明</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><span class="step-number">1</span>全組就位與分工確認</td>
+            <td>5 分鐘</td>
+            <td>
+                官方半組與民間半組先坐在一起，確認今天的小組成員與分工：
+                誰負責操作電腦、誰負責記錄重點、誰負責最後在 Padlet 上貼文。
+            </td>
+        </tr>
+        <tr>
+            <td><span class="step-number">2</span>開啟雙邊 NotebookLM 筆記</td>
+            <td>10 分鐘</td>
+            <td>
+                由負責操作的同學打開「官方組」與「民間組」兩本 NotebookLM，
+                兩邊輪流簡短說明前一節課整理出的重點內容，讓全組有共同的基本理解。
+            </td>
+        </tr>
+        <tr>
+            <td><span class="step-number">3</span>交換閱讀 Padlet 貼文</td>
+            <td>10 分鐘</td>
+            <td>
+                先快速瀏覽自己半組在 Padlet 上的貼文，再一起閱讀另一半組的貼文，
+                特別留意官方與民間在「共同點」與「不同點」上的描述與用詞。
+            </td>
+        </tr>
+        <tr>
+            <td><span class="step-number">4</span>依七題引導完成整合討論</td>
+            <td>15 分鐘</td>
+            <td>
+                依照老師設定的 7 題回報題目，逐題回頭查看 NotebookLM 筆記與 Padlet 貼文，
+                全組口頭討論並完成答案草稿，最後準備由組長統整後貼在
+                <span class="tag-box tag-integrate">#整合成果</span> 欄位。
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+                    </div>
+                </div>
+
+               <div class="section">
+    <div class="section-title" onclick="toggleSection(this)">
+        <span class="arrow">▶</span>
+        <span>📋 步驟五：Padlet 最終成果回報（全組 7 題）</span>
+    </div>
+    <div class="collapse-content">
+        <div style="margin-bottom: 20px; background: #e8f5e9; padding: 20px; border-radius: 8px; border-left: 4px solid #4CAF50;">
+            <p style="margin-bottom: 10px; color: #4CAF50; font-size: 1.2em;"><strong>🚀 回報提醒：</strong></p>
+            <p style="margin-bottom: 8px;">• 本次由<strong>組長</strong>代表全組貼文，並將貼文貼在 <strong>Padlet 的「整合成果」欄位</strong>。</p>
+            <p style="margin-bottom: 8px;">• 請在 Padlet 上使用標籤：<span class="tag-box tag-integrate">#整合成果</span></p>
+            <p>• 題目數量為 <strong>7 題</strong>，請參考示範格式，<strong>逐一貼文</strong>。</p>
+        </div>
+        
+        <h3 style="margin: 30px 0 20px 0; color: #e74c3c; text-align: center; font-size: 1.5em;">📜 第二節課回饋卡（7 題） - 紅色</h3>
+        <p style="text-align: center; margin-bottom: 15px; color: #666;">請將以下 <strong>7 個問題</strong> 分別張貼成 7 則獨立貼文</p>
+        <p style="text-align: center; margin-bottom: 25px; background: #fffafa; border: 1px solid #e74c3c; padding: 15px; border-radius: 8px;">
+            <strong>📝 重要提醒：</strong>前 3 題請參考第一節課 Padlet 上「官方 / 民間」貼文的結果
+        </p>
+
+        <div class="padlet-list">
+
+            <!-- 1 -->
+            <div class="feedback-item">
+                <div class="feedback-header-with-btn">
+                    <span>1. ⚖️ 官方 vs 民間的共同點</span>
+                    <button class="copy-btn copy-question" onclick="copyQuestion('1. ⚖️ 官方 vs 民間的共同點')">📋 複製標題</button>
+                </div>
+
+               <div class="feedback-content">
+                    <p>請參考官方/民間的第1.2題貼文，整理出官方資料和民間資料中，對這個主題「說法很相似或方向一致」的<strong>2–3 個共同點</strong>。</p>
+                    <div class="example-box">
+                        <strong>【範例】</strong><br>
+                        1️⃣ 官方和民間都認為：「這個議題和國中生的生活有關」。<br>
+                        2️⃣ 兩邊都提到：「如果處理不好，會影響到未來升學或工作」。 
+                    </div>
+                    <p class="feedback-purpose">💡 <strong>目的：</strong>先找出雙方「有共識」的地方，作為之後寫立場的基礎。</p>
+                </div>
+            </div>
+
+            <!-- 2 -->
+            <div class="feedback-item">
+                <div class="feedback-header-with-btn">
+                    <span>2. ⚔️ 官方 vs 民間的差異</span>
+                    <button class="copy-btn copy-question" onclick="copyQuestion('2. ⚔️ 官方 vs 民間的差異')">📋 複製標題</button>
+                </div>
+                <div class="feedback-content">
+                    <p>請比較官方/民間的第3題貼文，寫出官方資料和民間資料之間<strong>最明顯不同的 2–3 點</strong>，可以是立場、關注對象、解決方法或用的數據不同。</p>
+                    <div class="example-box">
+                        <strong>【範例】</strong><br>
+                        1️⃣ 官方強調「政策的長期好處」，民間比較在意「短期的生活壓力」。<br>
+                        2️⃣ 官方用的是全國性的統計數字，民間報導則多是個別案例或訪談。
+                    </div>
+                    <p class="feedback-purpose">💡 <strong>目的：</strong>清楚看到「官方說法 vs 民間感受」不一樣的地方，是研究中相當重要的關鍵。</p>
+                </div>
+            </div>
+
+            <!-- 3 -->
+            <div class="feedback-item">
+                <div class="feedback-header-with-btn">
+                    <span>3. 🧭 我們在 NotebookLM 的研究方向中想研究哪些</span>
+                    <button class="copy-btn copy-question" onclick="copyQuestion('3. 🧭 我們在 NotebookLM 的研究方向中想研究哪些')">📋 複製標題</button>
+                </div>
+                <div class="feedback-content">
+                    <p>請根據官方/民間的第4題的內容，全組一起決定<strong>接下來最想研究的 2–3 個方向</strong>，用條列方式寫出來。</p>
+                    <div class="example-box">
+                        <strong>【範例】</strong><br>
+                        1️⃣ 想了解「家長」對這個政策的真正想法。<br>
+                        2️⃣ 想比較「都市學校」和「非都市學校」在這個議題上的差異。
+                    </div>
+                    <p class="feedback-purpose">💡 <strong>目的：</strong>把 AI 給的「研究方向建議」轉成自己真正有興趣、想深入的主題。</p>
+                </div>
+            </div>
+
+            <!-- 4 -->
+            <div class="feedback-item">
+                <div class="feedback-header-with-btn">
+                    <span>4. 👥 這件事情最會影響到誰？</span>
+                    <button class="copy-btn copy-question" onclick="copyQuestion('4. 👥 這件事情最會影響到誰？')">📋 複製標題</button>
+                </div>
+                <div class="feedback-content">
+                    <p>請列出<strong>1–3 種最受影響的對象</strong>（例如：國中生、家長、老師、政府、特定族群），並簡單說明為什麼。</p>
+                    <div class="example-box">
+                        <strong>【範例】</strong><br>
+                        1️⃣ 國中生──因為政策直接影響到我們能不能參與、能拿到多少資源。<br>
+                        2️⃣ 家長──他們要負擔時間與金錢，也會影響他們對政府的信任感。
+                    </div>
+                    <p class="feedback-purpose">💡 <strong>目的：</strong>思考政策或議題背後，真正被影響的是哪些人。</p>
+                </div>
+            </div>
+
+            <!-- 5 -->
+            <div class="feedback-item">
+                <div class="feedback-header-with-btn">
+                    <span>5. 🤔 我們現在最搞不清楚的是什麼？</span>
+                    <button class="copy-btn copy-question" onclick="copyQuestion('5. 🤔 我們現在最搞不清楚的是什麼？')">📋 複製標題</button>
+                </div>
+                <div class="feedback-content">
+                    <p>請寫下全組目前覺得<strong>最困惑、最想弄清楚的 1–3 個問題</strong>，可以是數據來源、執行方式或公平性的問題。</p>
+                    <div class="example-box">
+                        <strong>【範例】</strong><br>
+                        1️⃣ 明明官方說很公平，但為什麼很多民眾還是覺得不公平？<br>
+                        2️⃣ 政策宣布後，如果遇到預算不足，政府會怎麼調整？
+                    </div>
+                    <p class="feedback-purpose">💡 <strong>目的：</strong>把「看不懂／覺得怪的地方」變成清楚的研究問題。</p>
+                </div>
+            </div>
+
+            <!-- 6 -->
+            <div class="feedback-item">
+                <div class="feedback-header-with-btn">
+                    <span>6. 📊 如果只能問一題問卷，我們最想問什麼？</span>
+                    <button class="copy-btn copy-question" onclick="copyQuestion('6. 📊 如果只能問一題問卷，我們最想問什麼？')">📋 複製標題</button>
+                </div>
+                <div class="feedback-content">
+                    <p>想像你們之後要做問卷調查，但<strong>只能問一題</strong>，請寫出你們「最想問同學／家長／老師」的那一題問卷題目。</p>
+                    <div class="example-box">
+                        <strong>【範例】</strong><br>
+                        「你覺得這個政策對國中生『最大的好處或壞處』是什麼？請簡單說明理由。」
+                    </div>
+                    <p class="feedback-purpose">💡 <strong>目的：</strong>從眾多疑問中選出「最核心、最值得調查」的一題。</p>
+                </div>
+            </div>
+
+            <!-- 7 -->
+            <div class="feedback-item">
+                <div class="feedback-header-with-btn">
+                    <span>7. 🎯 我們為什麼想知道這件事？</span>
+                    <button class="copy-btn copy-question" onclick="copyQuestion('7. 🎯 我們為什麼想知道這件事？')">📋 複製標題</button>
+                </div>
+                <div class="feedback-content">
+                    <p>請用<strong>2–3 句</strong>說明：為什麼這個主題值得我們花時間研究？對我們自己、學校或社會有什麼重要性？</p>
+                    <div class="example-box">
+                        <strong>【範例】</strong><br>
+                        我們想知道這件事，是因為它會影響我們未來能不能擁有公平的學習機會。<br>
+                        了解不同立場的理由，也能幫助我們在面對爭議時，不只是跟著情緒，而是用資料說話。
+                    </div>
+                    <p class="feedback-purpose">💡 <strong>目的：</strong>「研究不是為了交作業」，而是和自己的生活、權利與責任有關。</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+    <script>
+        // 切換課程分頁的函數
+        function switchLesson(lessonNumber) {
+            const contents = document.querySelectorAll('.lesson-content');
+            const buttons = document.querySelectorAll('.tab-button');
+            
+            contents.forEach(content => content.classList.remove('active'));
+            buttons.forEach(button => button.classList.remove('active'));
+            
+            document.getElementById('lesson' + lessonNumber).classList.add('active');
+            buttons[lessonNumber - 1].classList.add('active');
+
+            // 展開新Lesson的第一個Section
+            const newLessonSectionTitle = document.querySelector('#lesson' + lessonNumber + ' .section-title');
+            if (newLessonSectionTitle) {
+                const content = newLessonSectionTitle.nextElementSibling;
+                const arrow = newLessonSectionTitle.querySelector('.arrow');
+
+                if (!content.classList.contains('active')) {
+                    content.classList.add('active');
+                    arrow.classList.add('rotated');
+                }
+            }
+        }
+
+        // 展開/收合區塊的函數
+        function toggleSection(element) {
+            const content = element.nextElementSibling;
+            const arrow = element.querySelector('.arrow');
+            
+            content.classList.toggle('active');
+            arrow.classList.toggle('rotated');
+        }
+
+        // 複製 Prompt (搜尋指令/提問) 的函數
+        function copyPrompt(id) {
+            const text = document.getElementById(id).textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = event.target;
+                const originalText = btn.textContent;
+                btn.textContent = '✓ 已複製！';
+                btn.style.background = '#4CAF50';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '#667eea'; // Revert to original prompt button color
+                }, 2000);
+            });
+        }
+
+        // 複製 Question (Padlet 標題，包含編號、圖示和文字) 的函數
+        function copyQuestion(text) {
+            // text 參數已經包含編號、圖示和文字，直接複製即可
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = event.target;
+                const originalText = btn.textContent;
+                btn.textContent = '✓ 已複製！';
+                btn.style.background = '#4CAF50';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '#667eea'; // Revert to original question button color
+                }, 2000);
+            });
+        }
+        
+        // 複製老師 E-mail 的函數
+        function copyEmail() {
+            const emailText = document.getElementById('teacherEmailText').textContent;
+            navigator.clipboard.writeText(emailText).then(() => {
+                const btn = event.target;
+                const originalText = btn.textContent;
+                btn.textContent = '✓ E-mail 已複製！';
+                btn.style.background = '#4CAF50';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '#764ba2'; // Revert to the email box button color
+                }, 2000);
+            });
+        }
+
+        // 初始設定
+        window.onload = function() {
+            // 初始展開第一個 Lesson 的第一個 Section
+            const firstSectionTitle = document.querySelector('#lesson1 .section-title');
+            if (firstSectionTitle) {
+                toggleSection(firstSectionTitle);
+            }
+        };
+    </script>
+</body>
+</html>
